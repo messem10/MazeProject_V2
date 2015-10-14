@@ -3,8 +3,8 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
-#include "MazeWalls.generated.h"
 #include "Pickup.h"
+#include "MazeWalls.generated.h"
 
 UCLASS()
 class MAZE_API AMazeWalls : public AActor

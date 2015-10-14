@@ -38,7 +38,6 @@ void AAvatar::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 
 	InputComponent->BindAxis("Yaw", this, &AAvatar::Yaw);
 	InputComponent->BindAxis("Pitch", this, &AAvatar::Pitch);
-	InputComponent->BindKey("Interact", this, &AAvatar::Interact);
 }
 
 void AAvatar::MoveForward(float amount)
@@ -69,10 +68,6 @@ void AAvatar::Pitch(float amount)
 	AddControllerPitchInput(100.f*amount*GetWorld()->GetDeltaSeconds());
 }
 
-void AAvatar::Interact(){
-	//May not implement.
-}
-
 void AAvatar::OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse, const FHitResult &Hit)
 {
 	if (GEngine)
@@ -88,9 +83,17 @@ void AAvatar::OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse
 		if (OtherActor->IsA(APickup::StaticClass()))
 		{
 			PickupFound = true;
-			Destroy(OtherActor);
+			OtherActor->K2_DestroyActor();
 			GEngine->AddOnScreenDebugMessage(3, 5.f, FColor::Yellow, "You found the key!");
 		}
+
+		/*
+		if (OtherActor->IsA(ACrumb::StaticClass()))
+		{
+			OtherActor->K2_DestroyActor();
+			// Add it back to additional crumbs
+		}
+		*/
 
 		// Now all we have to add is that the two walls move down
 		//   and give an indication that it was hit other than the ball disappearing!

@@ -31,8 +31,6 @@ public:
 	void Yaw(float amount);
 	void Pitch(float amount);
 
-	void Interact();
-
 	UFUNCTION()
 		void OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse, const FHitResult &Hit);
 	
