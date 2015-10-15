@@ -1,13 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+/*
 #pragma once
 
 #include "GameFramework/HUD.h"
 #include "MyHUD_V2.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class MAZE_API AMyHUD_V2 : public AHUD
 {
@@ -15,10 +14,12 @@ class MAZE_API AMyHUD_V2 : public AHUD
 	
 public:
 	AMyHUD_V2();
-	AMyHUD_V2(const class FobjectInitializer &PCIP);
+	AMyHUD_V2(const class FObjectInitializer& PCIP);
 	
 	UFont *MyFont;
 
 	virtual void DrawHUD() override;
 	
 };
+
+*/

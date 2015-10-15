@@ -7,7 +7,7 @@
 // Sets default values
 ACrumb::ACrumb()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	// PrimaryActorTick.bCanEverTick = true;
 
 	struct FConstructorStatics
@@ -15,8 +15,8 @@ ACrumb::ACrumb()
 		ConstructorHelpers::FObjectFinderOptional<UStaticMesh> CrumbMesh;
 		ConstructorHelpers::FObjectFinderOptional<UMaterialInstance> CrumbMaterial;
 		FConstructorStatics()
-			: CrumbMesh(TEXT("/Game/CreatedContent/CrumbMesh.CrumbMesh"))
-			, CrumbMaterial(TEXT("/Game/CreatedContent/CrumbMaterial.CrumbMaterial"))
+			: CrumbMesh(TEXT("/Game/CreatedContent/Crumb_Stuff/CrumbMesh.CrumbMesh"))
+			, CrumbMaterial(TEXT("/Game/CreatedContent/Crumb_Stuff/CrumbMaterial.CrumbMaterial"))
 		{
 		}
 	};
@@ -30,7 +30,7 @@ ACrumb::ACrumb()
 	CrumbMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CrumbMesh0"));
 	CrumbMesh->SetStaticMesh(ConstructorStatics.CrumbMesh.Get());
 	CrumbMesh->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.25f));
-	CrumbMesh->SetRelativeLocation(FVector(0.f, 0.f, 25.f));
+	CrumbMesh->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	CrumbMesh->SetMaterial(0, ConstructorStatics.CrumbMaterial.Get());
 	CrumbMesh->AttachTo(DummyRoot);
 }
@@ -39,13 +39,13 @@ ACrumb::ACrumb()
 void ACrumb::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
-void ACrumb::Tick( float DeltaTime )
+void ACrumb::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
+	Super::Tick(DeltaTime);
 
 }
 

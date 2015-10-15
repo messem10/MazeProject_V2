@@ -1,0 +1,10 @@
+diff a/Source/maze/Avatar.cpp b/Source/maze/Avatar.cpp	(rejected hunks)
+@@ -2,7 +2,7 @@
+ 
+ #include "maze.h"
+ #include "Avatar.h"
+-#include "Pickup.h"
++
+ 
+ 
+ // Sets default values

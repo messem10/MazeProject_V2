@@ -2,7 +2,8 @@
 
 #include "maze.h"
 #include "Avatar.h"
-
+#include "Pickup.h"
+#include "Crumb.h"
 
 
 // Sets default values
@@ -11,6 +12,7 @@ AAvatar::AAvatar()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	this->OnActorHit.AddDynamic(this, &AAvatar::OnHit);
 }
 
 // Called when the game starts or when spawned
@@ -23,7 +25,6 @@ void AAvatar::BeginPlay()
 void AAvatar::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
 }
 
 // Called to bind functionality to input
@@ -86,12 +87,13 @@ void AAvatar::StopJumping()
 
 void AAvatar::SpawnCrumb()
 {
-	if (CrumbCNTleft != 0) {
-		const FVector CrumbLocation = FVector(0.f, 0.f, 0.f) + GetActorLocation();
-		ACrumb *NewCrumb = GetWorld()->SpawnActor<ACrumb>(CrumbLocation, FRotator(0, 0, 0));
-		CrumbArray.Add(NewCrumb);
-		CrumbCNTcurrent++;
-		CrumbCNTleft--;
+	if (CrumbAvailable != 0) {
+		const FVector CrumbLocation = FVector(GetActorLocation().X, GetActorLocation().Y, 200.f);
+
+		// Original Line: ACrumb *NewCrumb = GetWorld()->SpawnActor<ACrumb>(CrumbLocation, FRotator(0, 0, 0));
+		ACrumb *NewCrumb = GetWorld()->SpawnActor<ACrumb>(CrumbLocation, GetActorRotation());
+		//CrumbArray.Add(&NewCrumb);
+		CrumbAvailable--;
 	}
 }
 
@@ -105,24 +107,26 @@ void AAvatar::OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse
 		else if (OtherActor)
 			GEngine->AddOnScreenDebugMessage(2, 5.f, FColor::Blue, OtherActor->GetActorLabel());
 
-		/* //ROTATION CODE (We don't need this!)
-		if (OtherActor)
+		// If OtherActor is a pickup, set the bool to true and remove the OtherActor.
+		// This doesn't rely on things that are only available when you play it in the editor!
+		if (OtherActor->IsA(APickup::StaticClass()))
 		{
-			FRotator ActorRotator = OtherActor->GetActorRotation();
-			//ActorRotator.Yaw += 2;
-			//OtherActor->SetActorRotation(ActorRotator);
-
-			FVector x;
-			x = FVector::CrossProduct(OtherActor->GetActorRightVector(), SelfActor->GetActorForwardVector());
-
-			if (x.Z > 0)
-				ActorRotator.Yaw += 2;
-			else
-				ActorRotator.Yaw -= 2;
-
-			OtherActor->SetActorRotation(ActorRotator);
-
+			PickupFound = true;
+			//OtherActor->Destroy();
+			GetWorld()->DestroyActor(OtherActor);
+			GEngine->AddOnScreenDebugMessage(3, 5.f, FColor::Yellow, "You found the key!");
 		}
-		*/
+
+
+		if (OtherActor->IsA(ACrumb::StaticClass()))
+		{
+			//OtherActor->Destroy();
+			GetWorld()->DestroyActor(OtherActor);
+			CrumbAvailable++;
+		}
+
+		// Now all we have to add is that the two walls move down
+		//   and give an indication that it was hit other than the ball disappearing!
+
 	}
 }
