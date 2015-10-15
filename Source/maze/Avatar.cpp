@@ -87,7 +87,7 @@ void AAvatar::StopJumping()
 
 void AAvatar::SpawnCrumb()
 {
-	if (CrumbAvailable != 0) {
+	if (CrumbAvailable != 0 && GetActorLocation().Z <= 110.f) {
 		const FVector CrumbLocation = FVector(GetActorLocation().X, GetActorLocation().Y, 200.f);
 
 		// Original Line: ACrumb *NewCrumb = GetWorld()->SpawnActor<ACrumb>(CrumbLocation, FRotator(0, 0, 0));
