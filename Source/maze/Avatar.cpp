@@ -2,7 +2,7 @@
 
 #include "maze.h"
 #include "Avatar.h"
-#include "Pickup.h"
+
 
 
 // Sets default values
@@ -17,7 +17,6 @@ AAvatar::AAvatar()
 void AAvatar::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -38,6 +37,11 @@ void AAvatar::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 
 	InputComponent->BindAxis("Yaw", this, &AAvatar::Yaw);
 	InputComponent->BindAxis("Pitch", this, &AAvatar::Pitch);
+
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::Jump);
+	InputComponent->BindAction("Jump", IE_Released, this, &AAvatar::StopJumping);
+
+	InputComponent->BindAction("Crumb", IE_Pressed, this, &AAvatar::SpawnCrumb);
 }
 
 void AAvatar::MoveForward(float amount)
@@ -68,6 +72,29 @@ void AAvatar::Pitch(float amount)
 	AddControllerPitchInput(100.f*amount*GetWorld()->GetDeltaSeconds());
 }
 
+void AAvatar::Jump()
+{
+	bPressedJump = true;
+	JumpKeyHoldTime = 0.0f;
+}
+
+void AAvatar::StopJumping()
+{
+	bPressedJump = false;
+	JumpKeyHoldTime = 0.0f;
+}
+
+void AAvatar::SpawnCrumb()
+{
+	if (CrumbCNTleft != 0) {
+		const FVector CrumbLocation = FVector(0.f, 0.f, 0.f) + GetActorLocation();
+		ACrumb *NewCrumb = GetWorld()->SpawnActor<ACrumb>(CrumbLocation, FRotator(0, 0, 0));
+		CrumbArray.Add(NewCrumb);
+		CrumbCNTcurrent++;
+		CrumbCNTleft--;
+	}
+}
+
 void AAvatar::OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse, const FHitResult &Hit)
 {
 	if (GEngine)
@@ -77,27 +104,6 @@ void AAvatar::OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse
 			GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Blue, SelfActor->GetActorLabel());
 		else if (OtherActor)
 			GEngine->AddOnScreenDebugMessage(2, 5.f, FColor::Blue, OtherActor->GetActorLabel());
-
-		// If OtherActor is a pickup, set the bool to true and remove the OtherActor.
-		// This doesn't rely on things that are only available when you play it in the editor!
-		if (OtherActor->IsA(APickup::StaticClass()))
-		{
-			PickupFound = true;
-			OtherActor->K2_DestroyActor();
-			GEngine->AddOnScreenDebugMessage(3, 5.f, FColor::Yellow, "You found the key!");
-		}
-
-		/*
-		if (OtherActor->IsA(ACrumb::StaticClass()))
-		{
-			OtherActor->K2_DestroyActor();
-			// Add it back to additional crumbs
-		}
-		*/
-
-		// Now all we have to add is that the two walls move down
-		//   and give an indication that it was hit other than the ball disappearing!
-
 
 		/* //ROTATION CODE (We don't need this!)
 		if (OtherActor)

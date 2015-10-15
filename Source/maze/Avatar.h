@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
 #include "GameFramework/Character.h"
 #include "Avatar.generated.h"
+#include "Crumb.h"
+
 
 UCLASS()
 class MAZE_API AAvatar : public ACharacter
@@ -23,6 +24,10 @@ public:
 	// Called to bind functionality to input
 	//virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
+	int CrumbCNTleft = 10;
+	int CrumbCNTcurrent = 0;
+	TArray<ACrumb> CrumbArray;
+
 	void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 	void MoveForward(float amount);
@@ -31,8 +36,14 @@ public:
 	void Yaw(float amount);
 	void Pitch(float amount);
 
+	UFUNCTION(BlueprintCallable, Category = "Pawn|Character")
+		void Jump();
+	UFUNCTION(BlueprintCallable, Category = "Pawn|Character")
+		void StopJumping();
+
+	void SpawnCrumb();
+
 	UFUNCTION()
 		void OnHit(AActor *SelfActor, AActor *OtherActor, FVector NormalImpulse, const FHitResult &Hit);
 	
-	bool PickupFound = false;
 };
